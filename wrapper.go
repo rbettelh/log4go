@@ -26,6 +26,10 @@ func LoadConfiguration(filename string, types ...string) {
 	}
 }
 
+func LoadConfigurationFromObject(filename string, lc LogConfig) {
+	Global.loadJsonConfiguration(filename, lc)
+}
+
 // Wrapper for (*Logger).AddFilter
 func AddFilter(name string, lvl Level, writer LogWriter) {
 	Global.AddFilter(name, lvl, writer)
