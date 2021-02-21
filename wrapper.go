@@ -27,7 +27,7 @@ func LoadConfiguration(filename string, types ...string) {
 }
 
 func LoadConfigurationFromObject(filename string, lc LogConfig) {
-	Global.loadJsonConfiguration(filename, lc)
+	Global.loadConfigurationFromObject(filename, lc)
 }
 
 // Wrapper for (*Logger).AddFilter
