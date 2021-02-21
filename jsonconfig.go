@@ -119,7 +119,7 @@ func (log Logger) LoadJsonConfiguration(filename string) {
 		os.Exit(1)
 	}
 
-	log.LoadConfigurationFromObject(filename, lc)
+	log.loadConfigurationFromObject(filename, lc)
 }
 
 func getLogLevel(l string) Level {
