@@ -58,33 +58,8 @@ type LogConfig struct {
 	Sockets []*SocketConfig `json:"sockets"`
 }
 
-// LoadJsonConfiguration load log config from json file
-// see examples/example.json for ducumentation
-func (log Logger) LoadJsonConfiguration(filename string) {
-	log.Close()
-	dst := new(bytes.Buffer)
-	var (
-		lc      LogConfig
-		content string
-	)
-	err := json.Compact(dst, []byte(filename))
-
-	if err != nil {
-		content, err = ReadFile(filename)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "LoadJsonConfiguration: Error: Could not read %q: %s\n", filename, err)
-			os.Exit(1)
-		}
-	} else {
-		content = string(dst.Bytes())
-	}
-
-	err = json.Unmarshal([]byte(content), &lc)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "LoadJsonConfiguration: Error: Could not parse json configuration in %q: %s\n", filename, err)
-		os.Exit(1)
-	}
-
+// RB - Add Configuration from LogConfig object
+func (log Logger) LoadConfiguration(lc LogConfig) {
 	if lc.Console.Enable {
 		filt, _ := jsonToConsoleLogWriter(filename, lc.Console)
 		log["stdout"] = &Filter{getLogLevel(lc.Console.Level), filt, "DEFAULT"}
@@ -115,7 +90,36 @@ func (log Logger) LoadJsonConfiguration(filename string) {
 		filt, _ := jsonToSocketLogWriter(filename, sc)
 		log[sc.Category] = &Filter{getLogLevel(sc.Level), filt, sc.Category}
 	}
+}
 
+// LoadJsonConfiguration load log config from json file
+// see examples/example.json for ducumentation
+func (log Logger) LoadJsonConfiguration(filename string) {
+	log.Close()
+	dst := new(bytes.Buffer)
+	var (
+		lc      LogConfig
+		content string
+	)
+	err := json.Compact(dst, []byte(filename))
+
+	if err != nil {
+		content, err = ReadFile(filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "LoadJsonConfiguration: Error: Could not read %q: %s\n", filename, err)
+			os.Exit(1)
+		}
+	} else {
+		content = string(dst.Bytes())
+	}
+
+	err = json.Unmarshal([]byte(content), &lc)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "LoadJsonConfiguration: Error: Could not parse json configuration in %q: %s\n", filename, err)
+		os.Exit(1)
+	}
+
+	LoadConfiguration(lc)
 }
 
 func getLogLevel(l string) Level {
