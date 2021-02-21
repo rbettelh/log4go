@@ -59,7 +59,7 @@ type LogConfig struct {
 }
 
 // RB - Add Configuration from LogConfig object
-func (log Logger) LoadConfigurationFromObject(lc LogConfig) {
+func (log Logger) LoadConfigurationFromObject(filename string, lc LogConfig) {
 	if lc.Console.Enable {
 		filt, _ := jsonToConsoleLogWriter(filename, lc.Console)
 		log["stdout"] = &Filter{getLogLevel(lc.Console.Level), filt, "DEFAULT"}
@@ -119,7 +119,7 @@ func (log Logger) LoadJsonConfiguration(filename string) {
 		os.Exit(1)
 	}
 
-	LoadConfiguration(lc)
+	LoadConfigurationFromObject(filename, lc)
 }
 
 func getLogLevel(l string) Level {
